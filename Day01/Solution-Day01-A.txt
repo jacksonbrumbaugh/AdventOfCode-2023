@@ -1,0 +1,22 @@
+$Raw = Get-Content *Day01-A*
+
+function Get-LineValue ( [string]$Line ) {
+  $OnlyNumber = $Line -replace "\D",""
+
+  if ( $OnlyNumber.Length -eq 0 ) {
+    $ErrorDetails = @{
+      Message     = "Failed to find any digits inside the line $($Line)"
+      ErrorAction = "Stop"
+    }
+    Write-Error @ErrorDetails
+  }
+
+  $FirstDigit = $OnlyNumber[0]
+  $LastDigit = $OnlyNumber[-1]
+
+  $Value = "{0}{1}" -f $FirstDigit, $LastDigit
+
+  Write-Output $Value
+}
+
+$Total = 0; $Raw.foreach{ $Total += Get-LineValue $_ }; $Total

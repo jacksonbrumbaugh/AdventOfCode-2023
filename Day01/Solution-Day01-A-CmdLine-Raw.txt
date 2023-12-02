@@ -1,0 +1,28 @@
+cd Code/Advent*
+dir
+$Raw = GC *Day01-A*
+$Raw.Count
+$Raw[0] -replace ".*(\d{1}).*",'$1'
+$Raw[0]
+$Raw[0] -replace "\D",""
+function Get-LineValue ( [string]$Line ) {
+$OnlyNumber = $Line -replace "\D",""
+
+if ( $OnlyNumber.Length -eq 0 ) {
+$ErrorDetails = @{
+Message     = "Failed to find any digits inside the line $($Line)"
+ErrorAction = "Stop"
+}
+Write-Error @ErrorDetails
+}
+
+$FirstDigit = $OnlyNumber[0]
+$LastDigit = $OnlyNumber[-1]
+
+$Value = "{0}{1}" -f $FirstDigit, $LastDigit
+
+Write-Output $Value
+}
+Get-LineValue $Raw[0]
+$Raw.foreach{ Get-LineValue $_ }
+$Total = 0; $Raw.foreach{ $Total += Get-LineValue $_ }; $Total
