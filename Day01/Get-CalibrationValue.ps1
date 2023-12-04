@@ -1,4 +1,4 @@
-function Get-LineValue {
+function Get-CalibrationValue {
   param (
     [Parameter(
       Mandatory

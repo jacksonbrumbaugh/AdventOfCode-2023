@@ -1,6 +1,11 @@
 $ModuleRootDir = $PSScriptRoot
 $ModuleName = Split-Path $ModuleRootDir -Leaf
 
+enum Part {
+  A
+  B
+}
+
 $ChildDirs = Get-ChildItem $ModuleRootDir -Directory
 
 $NoExportKeywordArray = @()

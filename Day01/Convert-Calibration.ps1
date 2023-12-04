@@ -1,4 +1,4 @@
-function Convert-Line {
+function Convert-Calibration {
   param (
     [Parameter(
       Mandatory

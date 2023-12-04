@@ -1,8 +1,9 @@
-function Get-Answer01 {
+function Measure-Answer01 {
   param (
+    [Part]
+    $Part = "B",
+
     [Parameter(
-      Mandatory,
-      Position = 0,
       ValueFromPipeline,
       ValueFromPipelineByPropertyName
     )]
@@ -11,27 +12,21 @@ function Get-Answer01 {
     )]
     [SupportsWildcards()]
     [string]
-    $Path,
-
-    [ValidateSet(
-      "A",
-      "B"
-    )]
-    $Puzzle = "B"
+    $Path = (Resolve-Path $PSScriptRoot/Input*)
   ) # End block:param
 
   process {
     $Total = 0
 
     foreach ( $ThisLine in (Get-Content $Path) ) {
-      $PuzzleCheckedLine = switch ( $Puzzle ) {
+      $PartLine = switch ( $Part ) {
         "A" { $ThisLine }
 
-        "B" { Convert-Line $ThisLine }
+        "B" { Convert-Calibration $ThisLine }
 
-      } # End block:switch on Puzzle
+      } # End block:switch on Part
 
-      $Total += Get-LineValue $PuzzleCheckedLine
+      $Total += Get-CalibrationValue $PartLine
 
     } # End block:foreach Line
 
