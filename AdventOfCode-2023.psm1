@@ -6,6 +6,17 @@ enum Part {
   B
 }
 
+enum GardeningSpec {
+  Seed
+  Soil
+  Fertilizer
+  Water
+  Light
+  Temp
+  Humidity
+  Location  
+}
+
 $ChildDirs = Get-ChildItem $ModuleRootDir -Directory
 
 $NoExportKeywordArray = @()
