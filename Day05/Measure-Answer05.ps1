@@ -16,23 +16,20 @@ function Measure-Answer05 {
   process {
     $SeedArray = (Get-Content $Path -First 1) -replace "seeds: ","" -split " "
 
-    $LocationArray = @()
+    $MinimumLocation = ConvertTo-Location $SeedArray[0]
+
+    $ConversionArray = New-Object System.Collections.ArrayList
 
     foreach ( $ThisSeed in $SeedArray ) {
-      $Soil = Convert-PlantInfo -Type Seed-Soil -From $ThisSeed
-      $Fertilizer = Convert-PlantInfo -Type Soil-Fertilizer -From $Soil
-      $Water = Convert-PlantInfo -Type Fertilizer-Water -From $Fertilizer
-      $Light = Convert-PlantInfo -Type Water-Light -From $Water
-      $Temp = Convert-PlantInfo -Type Light-Temp -From $Light
-      $Humidity = Convert-PlantInfo -Type Temp-Humidity -From $Temp
-      $Location = Convert-PlantInfo -Type Humidity-Location -From $Humidity
+      $ConversionArray.Add( (ConvertTo-Location $ThisSeed) ) | Out-Null
 
-      Write-Host $Location
+      if ( $ConversionArray.Location -lt $MinimumLocation ) {
+        $MinimumLocation = $ConversionArray.Location
+      }
 
-      $LocationArray += $Location
-    }
+    } # End block:foreach Seed
 
-    Write-Output ($LocationArray | Measure-Object -Minimum).Minimum
+    Write-Output $MinimumLocation
 
   } # End block:proces
 
