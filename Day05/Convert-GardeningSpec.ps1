@@ -24,11 +24,25 @@ function Convert-GardeningSpec {
       Mandatory
     )]
     [PSCustomObject]
-    $Guide
+    $Guide,
+
+    [switch]
+    $Reverse
   ) # End block:param
 
   begin {
     $Guide = Import-GardenGuide -Guide $Guide -GuidePath $GuidePath
+
+    if ( $Reverse ) {
+      foreach ( $ThisRow in $Guide ) {
+        $WasSource = $ThisRow.SourceStart
+        $WasDest = $ThisRow.DestStart
+
+        $ThisRow.DestStart = $WasSource
+        $ThisRow.SourceStart = $WasDest
+      }
+    } # End block:if Reversing conversing direction
+
   } # End block:begin
 
   process {

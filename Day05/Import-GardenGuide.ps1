@@ -1,71 +1,35 @@
 function Import-GardenGuide {
-  [CmdletBinding( DefaultParameterSetName = "OnlyGuide")]
   param (
-    [Parameter(
-      ParameterSetName = "OnlyGuide",
-      Mandatory
-    )]
-    [Parameter(
-      ParameterSetName = "Both",
-      Mandatory
-    )]
-    [PSCustomObject]
-    $Guide,
-
-    [Parameter(
-      ParameterSetName = "OnlyPath",
-      Mandatory
-    )]
-    [Parameter(
-      ParameterSetName = "Both",
-      Mandatory
-    )]
     [ValidatePattern("csv$")]
     [ValidateScript(
       { Test-Path $_ }
     )]
     [string]
-    $GuidePath
+    $GuidePath,
+
+    [PSCustomObject[]]
+    $Guide
   ) # End block:param
 
   process {
-    $OutputGuide = switch -Wildcard ( $PSCmdlet.ParameterSetName ) {
-      "*Path" {
-        Write-Verbose "Loading guide from $($GuidePath)"
-        Import-CSV $GuidePath
-      } # End case:*Path
+    $isGuideEmpty = $Guide.Count -eq 0
+    $isGuidePathBlank = [string]::IsNullOrEmpty($GuidePath)
 
-      { "Both" } {
-        Write-Verbose "Both a GuidePath & Guide were given as inputs"
+    if ( $isGuideEmpty -and $isGuidePathBlank ) {
+      $ErrorDetails = @{
+        Message     = "Failed to give either a Gardening Spec Guide or a path to a guide. "
+        ErrorAction = "Stop"
+      }
 
-        if ( $Guide.Count -eq 0 ) {
-          Write-Verbose "Loading guide from $($GuidePath)"
-          Import-CSV $GuidePath
-        } else {
-          Write-Verbose "Using the given Guide"
-          $Guide
-        }
+      Write-Error @ErrorDetails
 
-      } # End case:Both
+    } # End block:if both useless
 
-      "*Guide" {
-        if ( $Guide.Count -eq 0 ) {
-          $ErrorDetails = @{
-            Message     = "The given guide does not have any rows. "
-            ErrorAction = "Stop"
-          }
-
-          Write-Error @ErrorDetails
-
-        } # End block:if Guide is empty
-
-        $Guide
-
-      } # End case:*Guide
-
-    } # End block:switch on Parameter Set Name
-
-    Write-Verbose "The guide has $($Guide.Count) rows"
+    $OutputGuide = if ( -not $isGuidePathBlank ) {
+      Import-CSV $GuidePath
+    } else {
+      $Guide
+    }
 
     Write-Output $OutputGuide
 
