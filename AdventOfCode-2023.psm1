@@ -17,12 +17,22 @@ enum GardeningSpec {
   Location  
 }
 
-$ChildDirs = Get-ChildItem $ModuleRootDir -Directory
+$DirToCheckArray = @(
+  $ModuleRootDir
+)
+
+$DirToCheckArray += Get-ChildItem $ModuleRootDir -Directory
 
 $NoExportKeywordArray = @()
 
-foreach ( $ThisDir in $ChildDirs ) {
-  foreach ( $ThisScript in (Get-ChildItem -Path (Get-Item $ModuleRootDir\$ThisDir) -Include "*.ps1" -Recurse) ) {
+foreach ( $ThisDir in $DirToCheckArray ) {
+  $GetFromDir = if ( $ThisDir -ne $ModuleRootDir ) {
+    Join-Path $ModuleRootDir $ThisDir
+  } else {
+    $ModuleRootDir
+  }
+
+  foreach ( $ThisScript in (Get-ChildItem -Path $GetFromDir -Include "*.ps1" -Recurse) ) {
     $ThisScriptItem = Get-Item $ThisScript
     $ThisScriptFullName = $ThisScriptItem.FullName
 
@@ -46,7 +56,7 @@ foreach ( $ThisDir in $ChildDirs ) {
 
   } # End block:foreach ThisScript
 
-} # End block:foreach Dir in ChildDIrs
+} # End block:foreach Dir to check
 
 $Aliases = (Get-Alias).Where{ $_.Source -eq $ModuleName }
 $AliasNames = $Aliases.Name -replace "(.*) ->.*","`$1"
