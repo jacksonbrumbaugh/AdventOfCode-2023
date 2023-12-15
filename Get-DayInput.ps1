@@ -8,9 +8,9 @@ function Get-DayInput {
   ) # End block:param
 
   process {
-    $PaddedDay = "{0:D2}" -f $Day
+    $InputFilePath = Resolve-AocPath -Day $Day -DayInput
 
-    $DayInput = Get-Content $ModuleRootDir/*/Input*$PaddedDay*
+    $DayInput = Get-Content $InputFilePath
 
     Write-Output $DayInput
 
