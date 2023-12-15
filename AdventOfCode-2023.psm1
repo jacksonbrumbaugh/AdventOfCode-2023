@@ -1,3 +1,8 @@
+<#
+Modified: 2023-12-15
+By: Jackson Brumbaugh
+#>
+
 $ModuleRootDir = $PSScriptRoot
 $ModuleName = Split-Path $ModuleRootDir -Leaf
 
@@ -23,7 +28,9 @@ $DirToCheckArray = @(
 
 $DirToCheckArray += Get-ChildItem $ModuleRootDir -Directory
 
-$NoExportKeywordArray = @()
+$NoExportKeywordArray = @(
+  "Helper"
+)
 
 foreach ( $ThisDir in $DirToCheckArray ) {
   $GetFromDir = if ( $ThisDir -ne $ModuleRootDir ) {
